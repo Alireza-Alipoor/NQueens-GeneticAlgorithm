@@ -20,7 +20,8 @@ def fitness(chrom: list[int]) -> int:
 
 
 def crossover(chrom1: list[int], chrom2: list[int]) -> list[int]:
-    ...
+    index=randint(0,8)
+    return chrom1[:index]+chrom2[index:]
 
 
 while True:
