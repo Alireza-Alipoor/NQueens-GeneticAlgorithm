@@ -6,6 +6,7 @@ from bisect import bisect_left
 N = 8
 number_of_chroms = 50
 max_fitness = comb(N, 2)
+max_generations = 1000
 
 population = [[randint(1, N) for _ in range(N)]
               for _ in range(number_of_chroms)]
@@ -24,8 +25,9 @@ def crossover(chrom1: list[int], chrom2: list[int]) -> list[int]:
     return chrom1[:index]+chrom2[index:]
 
 
+generation = 0
 found = False
-while not found:
+while not found and generation < max_generations:
     # calculating fitness of every chromosome
     total_fitness = 0
     fitnesses = []
@@ -57,8 +59,9 @@ while not found:
 
         child = crossover(population[index1], population[index2])
         new_poplulation.append(child)
-        
+
     population = new_poplulation
+    generation += 1
 
 # build the board
 board = [[0]*N for _ in range(N)]
