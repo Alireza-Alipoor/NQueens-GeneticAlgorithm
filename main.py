@@ -63,9 +63,12 @@ while not found and generation < max_generations:
     population = new_poplulation
     generation += 1
 
-# build the board
-board = [[0]*N for _ in range(N)]
-for i in range(N):
-    board[ans[i]-1][i] = 1
-
-print(board)
+if found:
+    # build the board
+    board = [[0]*N for _ in range(N)]
+    for i in range(N):
+        board[ans[i]-1][i] = 1
+    for row in board:
+        print(" ".join("Q" if cell else "." for cell in row))
+else:
+    print('no solution found')
