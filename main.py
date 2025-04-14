@@ -20,16 +20,20 @@ def fitness(chrom: list[int]) -> int:
 
 
 def crossover(chrom1: list[int], chrom2: list[int]) -> list[int]:
-    index=randint(0,8)
+    index = randint(0, N-1)
     return chrom1[:index]+chrom2[index:]
 
 
-while True:
+found = False
+while not found:
     # calculating fitness of every chromosome
     total_fitness = 0
     fitnesses = []
     for chrom in population:
         score = fitness(chrom)
+        if score == max_fitness:
+            ans = chrom
+            found = True
         fitnesses.append(score)
         total_fitness += score
 
@@ -53,5 +57,12 @@ while True:
 
         child = crossover(population[index1], population[index2])
         new_poplulation.append(child)
-    
-    population=new_poplulation
+        
+    population = new_poplulation
+
+# build the board
+board = [[0]*N for _ in range(N)]
+for i in range(N):
+    board[ans[i]-1][i] = 1
+
+print(board)
