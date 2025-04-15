@@ -2,11 +2,13 @@ from random import randint, random
 from math import comb
 from itertools import combinations
 from bisect import bisect_left
+from heapq import heappush, heappop
 
 N = 8
 number_of_chroms = 50
 max_fitness = comb(N, 2)
-max_generations = 1000
+max_generations = 2000
+elit_selection = 4
 
 population = [[randint(1, N) for _ in range(N)]
               for _ in range(number_of_chroms)]
@@ -31,11 +33,13 @@ while not found and generation < max_generations:
     # calculating fitness of every chromosome
     total_fitness = 0
     fitnesses = []
+    heap = []
     for chrom in population:
         score = fitness(chrom)
         if score == max_fitness:
             ans = chrom
             found = True
+        heappush(heap, (-score, chrom))
         fitnesses.append(score)
         total_fitness += score
 
@@ -51,7 +55,13 @@ while not found and generation < max_generations:
 
     # building new population
     new_poplulation = []
-    for _ in range(number_of_chroms):
+
+    # directly add elite chroms to the new_population
+    for _ in range(elit_selection):
+        _, chrom = heappop(heap)
+        new_poplulation.append(chrom)
+
+    for _ in range(number_of_chroms-elit_selection):
         # selecting parents
         r1, r2 = random(), random()
         index1 = bisect_left(cumulative_probs, r1)
