@@ -11,6 +11,7 @@ number_of_chroms = 50
 max_fitness = comb(N, 2)
 max_generations = 1000
 elit_selection = 2
+mutation_rate = 0.0005
 
 population = [[randint(1, N) for _ in range(N)]
               for _ in range(number_of_chroms)]
@@ -28,7 +29,12 @@ def crossover(chrom1: list[int], chrom2: list[int]) -> list[int]:
     index = randint(0, N-1)
     return chrom1[:index]+chrom2[index:]
 
-mean_fitnesses=[]
+
+def mutate(chrom: list[int], mutation_rate=mutation_rate) -> list[int]:
+    return [randint(1, N) for _ in range(N)]if random() < mutation_rate else chrom
+
+
+mean_fitnesses = []
 
 generation = 0
 found = False
@@ -45,7 +51,7 @@ while not found and generation < max_generations:
         heappush(heap, (-score, chrom))
         fitnesses.append(score)
         total_fitness += score
-    
+
     mean_fitnesses.append(total_fitness/number_of_chroms)
 
     # calculating probabilty for every chromosome
@@ -72,7 +78,7 @@ while not found and generation < max_generations:
         index1 = bisect_left(cumulative_probs, r1)
         index2 = bisect_left(cumulative_probs, r2)
 
-        child = crossover(population[index1], population[index2])
+        child = mutate(crossover(population[index1], population[index2]))
         new_poplulation.append(child)
 
     population = new_poplulation
@@ -88,8 +94,8 @@ if found:
 else:
     print('no solution found')
 
-x=range(generation)
-plt.plot(x,mean_fitnesses,label='mean fitness')
-plt.plot(x,[max_fitness]*generation,'--',label='max possible fitness')
+x = range(generation)
+plt.plot(x, mean_fitnesses, label='mean fitness')
+plt.plot(x, [max_fitness]*generation, '--', label='max possible fitness')
 plt.legend()
 plt.show()
