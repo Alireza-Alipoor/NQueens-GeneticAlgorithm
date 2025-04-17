@@ -3,12 +3,14 @@ from math import comb
 from itertools import combinations
 from bisect import bisect_left
 from heapq import heappush, heappop
+import matplotlib.pyplot as plt
+import numpy as np
 
 N = 8
 number_of_chroms = 50
 max_fitness = comb(N, 2)
-max_generations = 2000
-elit_selection = 4
+max_generations = 1000
+elit_selection = 2
 
 population = [[randint(1, N) for _ in range(N)]
               for _ in range(number_of_chroms)]
@@ -26,6 +28,7 @@ def crossover(chrom1: list[int], chrom2: list[int]) -> list[int]:
     index = randint(0, N-1)
     return chrom1[:index]+chrom2[index:]
 
+mean_fitnesses=[]
 
 generation = 0
 found = False
@@ -42,6 +45,8 @@ while not found and generation < max_generations:
         heappush(heap, (-score, chrom))
         fitnesses.append(score)
         total_fitness += score
+    
+    mean_fitnesses.append(total_fitness/number_of_chroms)
 
     # calculating probabilty for every chromosome
     probs = [fitness/total_fitness for fitness in fitnesses]
@@ -82,3 +87,9 @@ if found:
         print(" ".join("Q" if cell else "." for cell in row))
 else:
     print('no solution found')
+
+x=range(generation)
+plt.plot(x,mean_fitnesses,label='mean fitness')
+plt.plot(x,[max_fitness]*generation,'--',label='max possible fitness')
+plt.legend()
+plt.show()
